@@ -120,18 +120,17 @@ A lightweight computer-vision application using **custom CNN models**, Flask, Op
 
 <p align="center">
   <a href="https://github.com/saichaitanya553">
-    <img src="https://github-readme-stats.vercel.app/api?username=saichaitanya553&show_icons=true&hide_border=true&rank_icon=github&cache_seconds=86400" alt="Sai Chaitanya's GitHub Stats" />
+    <img src="./profile/stats.svg" alt="Sai Chaitanya's GitHub Stats" height="180" />
   </a>
   <a href="https://github.com/saichaitanya553?tab=repositories">
-    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=saichaitanya553&layout=compact&hide_border=true&cache_seconds=86400" alt="Sai Chaitanya's Top Languages" />
+    <img src="./profile/top-langs.svg" alt="Sai Chaitanya's Top Languages" height="180" />
   </a>
 </p>
-
 ---
 
 ## 🔗 Connect With Me
 
-- 🌐 **Portfolio:** [View Portfolio](https://github.com/saichaitanya553/Portfolio)
+- 🌐 **Portfolio:** [View Portfolio](https://saichaitanya553.github.io/Portfolio/)
 - 💻 **GitHub:** [@saichaitanya553](https://github.com/saichaitanya553)
 - 📄 **Resume:** Available through my portfolio
 
