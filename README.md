@@ -118,9 +118,14 @@ A lightweight computer-vision application using **custom CNN models**, Flask, Op
 
 ## 📊 GitHub
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=saichaitanya553&show_icons=true&hide_border=true&rank_icon=github)
-
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=saichaitanya553&layout=compact&hide_border=true)
+<p align="center">
+  <a href="https://github.com/saichaitanya553">
+    <img src="https://github-readme-stats.vercel.app/api?username=saichaitanya553&show_icons=true&hide_border=true&rank_icon=github&cache_seconds=86400" alt="Sai Chaitanya's GitHub Stats" />
+  </a>
+  <a href="https://github.com/saichaitanya553?tab=repositories">
+    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=saichaitanya553&layout=compact&hide_border=true&cache_seconds=86400" alt="Sai Chaitanya's Top Languages" />
+  </a>
+</p>
 
 ---
 
