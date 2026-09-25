@@ -18,21 +18,89 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate GitHub stats card
-        uses: readme-tools/github-readme-stats-action@v1
-        with:
-          card: stats
-          options: username=${{ github.repository_owner }}&show_icons=true&hide_border=true
-          path: profile/stats.svg
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate reliable local stats cards
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.repository_owner }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from collections import Counter
+          from datetime import datetime, timezone
 
-      - name: Generate top languages card
-        uses: readme-tools/github-readme-stats-action@v1
-        with:
-          card: top-langs
-          options: username=${{ github.repository_owner }}&layout=compact&hide_border=true
-          path: profile/top-langs.svg
-          token: ${{ secrets.GITHUB_TOKEN }}
+          user = os.environ["GH_USER"]
+          token = os.environ["GH_TOKEN"]
+
+          def get_json(url):
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              with urllib.request.urlopen(req) as r:
+                  return json.load(r)
+
+          repos = get_json(f"https://api.github.com/users/{user}/repos?per_page=100&type=owner")
+          profile = get_json(f"https://api.github.com/users/{user}")
+
+          public_repos = profile.get("public_repos", len(repos))
+          followers = profile.get("followers", 0)
+          following = profile.get("following", 0)
+          total_stars = sum(r.get("stargazers_count", 0) for r in repos)
+
+          langs = Counter(r.get("language") for r in repos if r.get("language"))
+          top_langs = langs.most_common(6)
+
+          def esc(s):
+              return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+          def svg_header(width, height, title):
+              return f'''<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="0.5" width="{width-1}" height="{height-1}" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+          <style>
+            .title {{ font: 700 20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#0969da; }}
+            .label {{ font: 600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#57606a; }}
+            .value {{ font: 700 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#24292f; }}
+            .small {{ font: 400 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#6e7781; }}
+          </style>
+          <text x="24" y="34" class="title">{esc(title)}</text>'''
+
+          now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+          stats = svg_header(576, 150, "GitHub Profile Stats")
+          items = [
+              ("Public Repositories", public_repos),
+              ("Total Stars", total_stars),
+              ("Followers", followers),
+              ("Following", following),
+          ]
+          positions = [(24, 66), (300, 66), (24, 108), (300, 108)]
+          for (label, value), (x, y) in zip(items, positions):
+              stats += f'<text x="{x}" y="{y}" class="label">{esc(label)}</text><text x="{x}" y="{y+22}" class="value">{esc(value)}</text>'
+          stats += f'<text x="24" y="140" class="small">Updated {now}</text></svg>'
+
+          langs_svg = svg_header(420, 230, "Top Languages")
+          if top_langs:
+              max_count = max(c for _, c in top_langs)
+              total = sum(langs.values())
+              y = 66
+              for lang, count in top_langs:
+                  pct = count / total * 100
+                  bar_w = 270
+                  filled = max(8, int(bar_w * count / max_count))
+                  langs_svg += f'<text x="24" y="{y}" class="label">{esc(lang)}</text><text x="340" y="{y}" class="small" text-anchor="end">{pct:.0f}%</text>'
+                  langs_svg += f'<rect x="24" y="{y+10}" width="{bar_w}" height="8" rx="4" fill="#eaeef2"/><rect x="24" y="{y+10}" width="{filled}" height="8" rx="4" fill="#0969da"/>'
+                  y += 30
+          else:
+              langs_svg += '<text x="24" y="70" class="label">No language data available</text>'
+          langs_svg += f'<text x="24" y="215" class="small">Based on primary repository languages • Updated {datetime.now(timezone.utc).strftime("%Y-%m-%d")}</text></svg>'
+
+          os.makedirs("profile", exist_ok=True)
+          open("profile/stats.svg", "w", encoding="utf-8").write(stats)
+          open("profile/top-langs.svg", "w", encoding="utf-8").write(langs_svg)
+          PY
 
       - name: Commit generated cards
         run: |
