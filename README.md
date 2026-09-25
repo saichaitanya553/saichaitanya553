@@ -116,18 +116,6 @@ A lightweight computer-vision application using **custom CNN models**, Flask, Op
 
 ---
 
-## 📊 GitHub
-
-<p align="center">
-  <a href="https://github.com/saichaitanya553">
-    <img src="./profile/stats.svg" alt="Sai Chaitanya's GitHub Stats" height="180" />
-  </a>
-  <a href="https://github.com/saichaitanya553?tab=repositories">
-    <img src="./profile/top-langs.svg" alt="Sai Chaitanya's Top Languages" height="180" />
-  </a>
-</p>
----
-
 ## 🔗 Connect With Me
 
 - 🌐 **Portfolio:** [View Portfolio](https://saichaitanya553.github.io/Portfolio/)
